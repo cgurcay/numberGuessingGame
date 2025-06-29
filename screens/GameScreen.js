@@ -1,3 +1,5 @@
+import { View, Text } from 'react-native'
+
 function GameScreen() {
     return (
         <View>
@@ -6,4 +8,4 @@ function GameScreen() {
     );
 }
 
-export default GameScreen
+export default GameScreen;

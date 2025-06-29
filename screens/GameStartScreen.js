@@ -1,22 +1,53 @@
-import { Text, TextInput, View, StyleSheet  } from 'react-native'
+import { Text, TextInput, View, StyleSheet, Alert } from 'react-native'
 import PrimaryButton from '../components/PrimaryButton';
+import { useState } from 'react';
 
-function GameStartScreen() {
+function GameStartScreen( { onPickNumber } ) {
+    const [enteredNumber, setEnteredNumber] = useState('');
+
+    function numberInputHandler(enteredText) {
+    setEnteredNumber(enteredText);
+    }
+
+    function resetInputHandler() {
+    setEnteredNumber('');
+    }
+
+    function confirmInputHandler() {
+        const chosenNumber = parseInt(enteredNumber);
+
+        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+            Alert.alert(
+                'Invalid number!',
+                'Number has to be between 1 and 99.',
+                [{ text: 'Okay', style: 'destructive', onPress: resetInputHandler }]
+            );
+            return;
+        }
+
+        onPickNumber(chosenNumber);
+    }
+
     return (
         <View style={styles.inputContainer}>
-            <TextInput style={styles.numberInput} maxLength={2} keyboardType="number-pad" autoCapitalize='none' autoCorrect={false} />
-            <View styles={styles.buttonContainer}>
-                <PrimaryButton>Reset</PrimaryButton>
-                <PrimaryButton>Confirm</PrimaryButton>
+            <TextInput style={styles.numberInput} maxLength={2} keyboardType="number-pad" autoCapitalize='none' autoCorrect={false} onChangeText={numberInputHandler} value={enteredNumber}/>
+            <View style={styles.buttonsContainer}>
+                <View style={styles.buttonContainer}>
+                    <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
+                </View>
             </View>
         </View>
     );
 }
 
-export default GameStartScreen
+export default GameStartScreen;
 
 const styles = StyleSheet.create({
     inputContainer: {
+        alignItems: 'center',
         marginTop: 80,
         marginHorizontal: 24,
         backgroundColor: '#2b62ba',
@@ -40,8 +71,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
-    buttonContainer: {
+    buttonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+    },
+    buttonContainer: {
+        flex: 1
     }
 })
